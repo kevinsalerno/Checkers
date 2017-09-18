@@ -15,13 +15,9 @@ public class Board {
 		System.out.println("board ready!");
 //		printBoard();
 //		this.move(cells[7][0], -6, 0);
-//		printBoard();
-//		this.move(cells[0][1], 1, 0);
-//		printBoard();
-//		this.move(cells[1][0], 0, -1);
-//		printBoard();
 	}
 	
+	//singleton
 	public static Board getInstance() {
 		if (instance == null) {
 			instance = new Board();
@@ -30,6 +26,7 @@ public class Board {
 	}
 	
 	public void printBoard() {
+		System.out.println("Move: "+ this.turns);
 		System.out.println("**********");
 		int i;
 		for (i = 0; i < this.cells[0].length; i++) {
@@ -80,8 +77,10 @@ public class Board {
 	}
 	
 	private void setupGame() {
+		//create board canvas data container
 		this.cells = new BoardObject[8][8];
 		
+		//place starting pieces for each team
 		placeStartingPieces("BLACK");
 		placeStartingPieces("WHITE");
 	}
@@ -90,8 +89,10 @@ public class Board {
 		int[] rows;
 		//determine which rows to place
 		if (team.equals("BLACK")) {
+			//black starts at top of board (cells[0, 1, 2][x])
 			rows = new int[]{0, 1, 2};
 		} else {
+			//white stops at bottom of board (cells[5, 6, 7][x])
 			rows = new int[]{5, 6, 7};
 		}
 		
@@ -100,8 +101,11 @@ public class Board {
 		// iterate each row
 		for (i = 0; i < rows.length; i++) {
 			int j;
+			//iterate each column in row
 			for (j = 0; j < 8; j++) {
-					if (rows[i] % 2 == 0 && j % 2 != 0 || rows[i] % 2 != 0 && j % 2 == 0) {
+				//Check for place able spaces)
+					if (rows[i] % 2 == 0 && j % 2 != 0
+						|| rows[i] % 2 != 0 && j % 2 == 0) {
 						System.out.println("Placing object at " + rows[i] + "x" + j);
 						this.cells[rows[i]][j] = new BoardObject(team, rows[i], j);
 					}

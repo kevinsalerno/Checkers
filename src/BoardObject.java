@@ -31,6 +31,24 @@ public class BoardObject {
 		return;
 	}
 	
+	public boolean[] getAvailableMoves() {
+		boolean[] availableMoves = new boolean[4];
+		if ((this.positionX - 1) >= 0) {
+			availableMoves[0] = true;
+		}
+		if ((this.positionX + 1) <= 7){
+			availableMoves[1] = true;
+		}
+		if ((this.positionY - 1) >= 0) {
+			availableMoves[2] = true;
+		}
+		if ((this.positionY + 1) <= 7) {
+			availableMoves[3] = true;
+		}
+		
+		return availableMoves;
+	}
+	
 	
 	
 }
