@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Track Jalan prices for natural-hot-spring hotels in Ginza and Asakusa.
 
-Stay: Dec 4-6 2026 (2 nights), 2 adults, 1 room. Appends one row per hotel
+Stay: Dec 4-6 2026 (2 nights), 1 adult, 1 room. Appends one row per hotel
 to prices.csv and prints a summary with the change since the previous run.
 """
 import csv
@@ -15,7 +15,7 @@ import urllib.request
 
 CHECKIN = datetime.date(2026, 12, 4)
 NIGHTS = 2
-ADULTS = 2
+ADULTS = 1
 
 HOTELS = [
     # (area, jalan id, name, hot spring)
@@ -64,7 +64,7 @@ def parse_offers(lines):
         elif (re.fullmatch(r"[\d,]+円～", line) and i + 2 < len(lines)
               and re.fullmatch(r"[\d,]+", lines[i + 1]) and lines[i + 2] == "円"):
             if any(w in room + plan for w in ("レディース", "女性専用")):
-                continue  # women-only rooms don't fit 2 adults generally
+                continue  # skip women-only rooms
             offers.append((int(lines[i + 1].replace(",", "")), room, plan))
     return offers
 
@@ -125,7 +125,7 @@ def main():
 
     rate = usd_per_jpy()
     print(f"Jalan prices, {CHECKIN:%b %d}-{CHECKIN + datetime.timedelta(days=NIGHTS):%b %d %Y}, "
-          f"{NIGHTS} nights, {ADULTS} adults, 1 room (checked {now})")
+          f"{NIGHTS} nights, {ADULTS} adult{'s' if ADULTS > 1 else ''}, 1 room (checked {now})")
     if rate:
         print(f"Exchange rate: ¥{1 / rate:,.1f} = $1")
     for r in rows:
