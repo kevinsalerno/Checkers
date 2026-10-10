@@ -7,6 +7,7 @@ to prices.csv and prints a summary with the change since the previous run.
 import csv
 import datetime
 import html
+import json
 import os
 import re
 import sys
@@ -68,6 +69,20 @@ def parse_offers(lines):
     return offers
 
 
+def usd_per_jpy():
+    """Today's JPY->USD rate, or None if the rate service is unreachable."""
+    try:
+        with urllib.request.urlopen("https://open.er-api.com/v6/latest/JPY", timeout=30) as resp:
+            return float(json.load(resp)["rates"]["USD"])
+    except Exception as exc:
+        print(f"!! exchange rate lookup failed: {exc}", file=sys.stderr)
+        return None
+
+
+def money(yen, rate):
+    return f"${yen * rate:,.0f} (¥{yen:,})" if rate else f"¥{yen:,}"
+
+
 def last_totals():
     totals = {}
     if os.path.exists(CSV_PATH):
@@ -108,8 +123,11 @@ def main():
             writer.writeheader()
         writer.writerows(rows)
 
+    rate = usd_per_jpy()
     print(f"Jalan prices, {CHECKIN:%b %d}-{CHECKIN + datetime.timedelta(days=NIGHTS):%b %d %Y}, "
           f"{NIGHTS} nights, {ADULTS} adults, 1 room (checked {now})")
+    if rate:
+        print(f"Exchange rate: ¥{1 / rate:,.1f} = $1")
     for r in rows:
         total = r["cheapest_total_jpy"]
         if total == "":
@@ -117,8 +135,12 @@ def main():
             print(f"  [{r['area']}] {r['hotel']}: {status}")
             continue
         prev = previous.get(r["jalan_id"])
-        delta = "" if prev is None or prev == total else f" ({total - prev:+,} vs last check)"
-        print(f"  [{r['area']}] {r['hotel']}: ¥{total:,}{delta} — {r['cheapest_room']}")
+        if prev is None or prev == total:
+            delta = ""
+        else:
+            sign = "+" if total > prev else "-"
+            delta = f" ({sign}{money(abs(total - prev), rate)} vs last check)"
+        print(f"  [{r['area']}] {r['hotel']}: {money(total, rate)}{delta} — {r['cheapest_room']}")
     return 1 if failed else 0
 
 

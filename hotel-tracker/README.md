@@ -12,5 +12,6 @@ and Asakusa for **Dec 4–6, 2026 (2 nights, 2 adults, 1 room)**.
 | Asakusa | Onyado Nono Asakusa Bettei | Ryoten no Yu |
 
 Run `python3 track_prices.py` (stdlib only). Each run appends the cheapest
-total (tax incl., whole stay) per hotel to `prices.csv` and prints the change
+total (tax incl., whole stay) per hotel to `prices.csv` (in yen) and prints it in USD
+at the day's exchange rate (open.er-api.com), with the change
 since the previous check. Women-only rooms are excluded.
