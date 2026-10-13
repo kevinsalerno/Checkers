@@ -11,6 +11,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.request
 
 CHECKIN = datetime.date(2026, 12, 4)
@@ -100,12 +101,22 @@ def main():
     failed = False
     for area, yad, name, spring in HOTELS:
         url = plan_url(yad)
-        try:
-            offers = parse_offers(fetch_lines(url))
-        except Exception as exc:  # keep going so one bad fetch doesn't stop the run
-            print(f"!! {name}: fetch failed: {exc}", file=sys.stderr)
+        offers = None
+        # Jalan sometimes serves a page with no prices or resets the connection,
+        # so retry before reporting a hotel as sold out or failed.
+        for attempt in range(3):
+            if attempt:
+                time.sleep(10)
+            try:
+                offers = parse_offers(fetch_lines(url))
+            except Exception as exc:
+                print(f"!! {name}: fetch failed (attempt {attempt + 1}): {exc}", file=sys.stderr)
+                offers = None
+                continue
+            if offers:
+                break
+        if offers is None:
             failed = True
-            offers = None
         best = min(offers) if offers else None
         rows.append({
             "checked_at": now, "area": area, "hotel": name, "jalan_id": yad,
