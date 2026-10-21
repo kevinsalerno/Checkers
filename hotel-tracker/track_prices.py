@@ -108,7 +108,11 @@ def main():
             if attempt:
                 time.sleep(10)
             try:
-                offers = parse_offers(fetch_lines(url))
+                lines = fetch_lines(url)
+                if any("再読み込みしてください" in line for line in lines):
+                    # Jalan's "please reload" error page, not a real sellout.
+                    raise RuntimeError("Jalan returned its error page")
+                offers = parse_offers(lines)
             except Exception as exc:
                 print(f"!! {name}: fetch failed (attempt {attempt + 1}): {exc}", file=sys.stderr)
                 offers = None
@@ -142,7 +146,7 @@ def main():
     for r in rows:
         total = r["cheapest_total_jpy"]
         if total == "":
-            status = "fetch error" if r["plans_found"] == "error" else "SOLD OUT / no plans"
+            status = "fetch error (Jalan error page or network)" if r["plans_found"] == "error" else "SOLD OUT / no plans"
             print(f"  [{r['area']}] {r['hotel']}: {status}")
             continue
         prev = previous.get(r["jalan_id"])
