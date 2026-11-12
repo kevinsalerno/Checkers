@@ -1,0 +1,4 @@
+# Fool's mate: Black checkmates on move 4.
+CHESS
+f3, e5
+g4 Qh4#

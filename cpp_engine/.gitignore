@@ -1,0 +1,6 @@
+build/
+checkers
+run_tests
+*.ppm
+shots/
+.DS_Store
