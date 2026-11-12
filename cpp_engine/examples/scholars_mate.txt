@@ -1,0 +1,3 @@
+# Scholar's mate: White wins on move 7.
+CHESS
+e4 e5 Bc4 Nc6 Qh5 Nf6 Qxf7#
