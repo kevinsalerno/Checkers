@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkers &amp; Chess Hub</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <h1><span class="logo-piece">&#9822;</span> Checkers &amp; Chess Hub</h1>
+  <div id="topbar-user" class="topbar-user hidden">
+    <span id="topbar-name"></span>
+    <span class="pill" title="ELO rating">ELO <strong id="topbar-elo"></strong></span>
+    <button id="btn-signout" class="btn small">Sign out</button>
+  </div>
+</header>
+
+<main>
+  <!-- Sign in / register -->
+  <section id="view-auth" class="card narrow">
+    <h2>Sign in</h2>
+    <p class="muted">Create an account or sign in to play, save games and track your ELO.</p>
+    <label>Username
+      <input id="auth-username" type="text" autocomplete="username" maxlength="20"
+        placeholder="3-20 letters, digits, _ or -">
+    </label>
+    <label>Password
+      <input id="auth-password" type="password" autocomplete="current-password"
+        placeholder="at least 6 characters">
+    </label>
+    <p id="auth-error" class="error" role="alert"></p>
+    <div class="row">
+      <button id="btn-login" class="btn primary">Sign in</button>
+      <button id="btn-register" class="btn">Register</button>
+    </div>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="view-dash" class="hidden">
+    <div class="grid two">
+      <div class="card">
+        <h2>Profile</h2>
+        <p class="profile-line"><strong id="dash-name"></strong>
+          <span class="pill">ELO <strong id="dash-elo"></strong></span></p>
+        <p class="muted" id="dash-record"></p>
+        <h3>Start a new game</h3>
+        <div class="row">
+          <button id="btn-new-checkers" class="btn primary">New Checkers</button>
+          <button id="btn-new-chess" class="btn primary">New Chess</button>
+        </div>
+        <h3>Join a friend's game</h3>
+        <div class="row">
+          <input id="join-id" type="number" min="1" placeholder="Game ID" class="short">
+          <button id="btn-join" class="btn">Join</button>
+        </div>
+        <p id="dash-error" class="error" role="alert"></p>
+      </div>
+      <div class="card">
+        <h2>Active games <span class="muted small">— resume any time, even from another device</span></h2>
+        <ul id="active-list" class="list"></ul>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Match history</h2>
+      <table id="history-table" class="table">
+        <thead><tr>
+          <th>Game</th><th>White</th><th>Black</th><th>Winner</th>
+          <th>Moves</th><th>Reason</th><th>When</th>
+        </tr></thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Game board -->
+  <section id="view-game" class="hidden">
+    <div class="card">
+      <div class="game-head">
+        <div>
+          <h2 id="game-title"></h2>
+          <p id="game-sub" class="muted"></p>
+        </div>
+        <div class="row">
+          <span id="live-dot" class="live" title="Live connection">live</span>
+          <button id="btn-save-quit" class="btn primary">Save &amp; Quit</button>
+          <button id="btn-resign" class="btn danger">Resign</button>
+          <button id="btn-back" class="btn">Dashboard</button>
+        </div>
+      </div>
+      <p id="game-status" class="status" role="status"></p>
+      <p id="game-error" class="error" role="alert"></p>
+      <div class="board-wrap">
+        <div id="board" class="board" aria-label="game board"></div>
+        <aside class="sidepanel">
+          <h3>Moves <span id="move-count" class="muted small"></span></h3>
+          <ol id="move-list" class="moves"></ol>
+        </aside>
+      </div>
+    </div>
+    <div id="promo-modal" class="modal hidden" role="dialog" aria-label="promote to">
+      <div class="modal-box">
+        <h3>Promote pawn to</h3>
+        <div class="row" id="promo-choices"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot muted">
+  Rules: American/English draughts (black moves first) and full chess rules, validated by the server.
+</footer>
+
+<script src="/app.js"></script>
+</body>
+</html>
